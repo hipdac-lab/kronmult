@@ -3,21 +3,432 @@
 
 #include "kroncommon.hpp"
 
-
 //  -----------------------
 //  NotransA and TransB case
 //  C = alpha*A*(B) + beta *C
 //  -----------------------
 //
+#ifdef USE_GPU // Use an adapted TSM2L+Ernst et. al. based technique
 
+#define DIV_ROUNDUP(n, d) ((n) - 1) / (d) + 1
+
+// Algorithm implementation
+template<typename T,typename Tc, int t1, int t2, int t3>
+DEVICE_FUNCTION
+void kgemm_nn3(volatile T* currB_, int const ldCurrB, int const padCurrB,
+               int const m, int const n, int const k,
+               T const alpha_in,
+               T const * const A_, int const ldA,
+               T const * const B_, int const ldB,
+               T const beta_in,
+               T * C_, int const ldC) 
+{
+#ifdef USE_LAMBDA
+        auto A = [=] (int const ia,
+                      int const ja) -> T const & {
+                return( A_[ indx2z(ia,ja,ldA) ] );
+        };
+
+        auto B = [=] (int const ib,
+                      int const jb) -> T const & {
+                return( B_[ indx2z(ib,jb,ldB) ] );
+        };
+
+        auto C = [=] (int const ic,
+                      int const jc) -> T& {
+                return( C_[ indx2z(ic,jc,ldC) ] );
+        };
+        auto currB = [=] (int const icb,
+                          int const jcb) -> T& {
+                return( currB_[ (icb) + ((jcb) * ldCurrB) + ((jcb) * padCurrB) ] );
+        };
+#else
+#define A(ia,ja)  A_[indx2z(ia,ja,ldA)]
+#define B(ib,jb)  B_[indx2z(ib,jb,ldB)]
+#define C(ic,jc)  C_[indx2z(ic,jc,ldC)]
+#define currB(icb, jcb) currB_[(icb) + ((jcb) * ldCurrB) + ((jcb) * padCurrB)]
+#endif
+        
+        // Number of rows each thread contributes to
+        int const nr = DIV_ROUNDUP(t2, t3);
+        
+        T oldC[nr];
+        Tc currC[nr];
+        T nextC[nr];
+        T nextB[nr];
+        
+        int const tid = threadIdx.x % t1;
+        int const rid = threadIdx.x / t1;
+        int const threadInc = t1;
+
+        int threadBase = 0;
+
+        for (int p = 0; p < m; p += t2) {
+                // Loads element of Matrix C
+                if (beta_in == 0) {
+                        #pragma unroll
+                        for (int i = 0; i < nr; ++i) {
+                                oldC[i] = 0;
+                        }
+                } else {
+                        #pragma unroll
+                        for (int i = 0; i < nr; ++i) {
+                                int trid = (i * t3) + rid;
+                                if (threadBase + tid < n && trid < t2 && p + trid < m) {
+                                        oldC[i] = beta_in * C(p + trid, threadBase + tid);
+                                }
+                        }
+                }
+
+                // Loads element of Matrix B
+                #pragma unroll
+                for (int i = 0; i < nr; ++i) {
+                        int trid = (i * t3) + rid;
+                        if (threadBase + tid < n && trid < t2 && trid < k) {
+                                currB(tid, trid) = B(trid, threadBase + tid);
+                        }
+                }
+
+                for (; threadBase < n; threadBase += threadInc) {
+                        // thread = threadBase + tid;
+                        // Load loops have extra conditionals to ensure
+                        // they do not make bad memory accesses
+
+                        // Prefetch next tile of Matrix C
+                        if (threadBase + threadInc < n) {
+                                if (beta_in == 0) {
+                                        #pragma unroll
+                                        for (int i = 0; i < nr; ++i) {
+                                                nextC[i] = 0;
+                                        }
+                                } else {
+                                        #pragma unroll
+                                        for (int i = 0; i < nr; ++i) {
+                                                int trid = (i * t3) + rid;
+                                                if (threadBase + threadInc + tid < n && trid < t2 && p + trid < m) {
+                                                        nextC[i] = C(p + trid, threadBase + threadInc + tid);
+                                                }
+                                        }
+                                }
+                        }
+
+                        #pragma unroll
+                        for (int i = 0; i < nr; ++i) {
+                                currC[i] = 0;
+                        }
+                        // Outer product loop
+                        for (int j = 0; j < k; j += t2) {
+                                __syncthreads();
+                
+                                // Prefetch next tile of B
+                                if (j + t2 < k) {
+                                        #pragma unroll
+                                        for (int i = 0; i < nr; ++i) {
+                                                int trid = (i * t3) + rid;
+                                                if (threadBase + tid < n && trid < t2 && j + t2 + trid < k) {
+                                                        nextB[i] = B(j + t2 + trid, threadBase + tid);
+                                                }
+                                        }
+                                } else if (threadBase + threadInc < n) {
+                                        #pragma unroll
+                                        for (int i = 0; i < nr; ++i) {
+                                                int trid = (i * t3) + rid;
+                                                if (threadBase + threadInc + tid < n && trid < t2 && trid < k) {
+                                                        nextB[i] = B(trid, threadBase + threadInc + tid);
+                                                }
+                                        }
+                                }
+
+                                // Floating Point Operations
+                                // Each thread does t2 mults
+     
+                                // Either dispatch guarded or unguarded instructions based
+                                // on position in matrix A
+                                if (j + t2 <= k) {
+                                        #pragma unroll
+                                        for (int i = 0; i < nr; ++i) {
+                                                int trid = (i * t3) + rid;
+                                                if (trid < t2) {
+                                                        #pragma unroll
+                                                        for (int b = 0; b < t2; ++b) {
+                                                                currC[i] +=
+                                                                        A(p + trid, j + b) * currB(tid, b);
+                                                        }
+                                                }
+                                        }
+                                } else {
+                                        #pragma unroll
+                                        for (int i = 0; i < nr; ++i) {
+                                                int trid = (i * t3) + rid;
+                                                if (trid < t2) {
+                                                        #pragma unroll
+                                                        for (int b = 0; b < t2; ++b) {
+                                                                if (j + b < k) {
+                                                                        currC[i] += 
+                                                                                A(p + trid, j + b) * currB(tid, b);
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                                __syncthreads();
+
+                                // Load prefetched B
+                                #pragma unroll
+                                for (int i = 0; i < nr; ++i) {
+                                        int trid = (i * t3) + rid;
+                                        if (trid < t2) {
+                                                currB(tid, trid) = nextB[i];
+                                        }
+                                }
+                        }
+
+                        // Stores and reloads C
+                        #pragma unroll
+                        for (int i = 0; i < nr; ++i) {
+                                int trid = (i * t3) + rid;
+                                if (threadBase + tid < n && trid < t2 && p + trid < m) {
+                                        C(p + trid, threadBase + tid) = (alpha_in * currC[i]) + oldC[i];
+                                }
+                        }
+            
+                        #pragma unroll
+                        for (int i = 0; i < nr; ++i) {
+                                oldC[i] = beta_in * nextC[i];
+                        }
+                }
+        }
+}
+
+// Select parameters
 template<typename T, typename Tc>
 DEVICE_FUNCTION
 void kgemm_nn2( int const mm, int const nn, int const kk, 
-               T const alpha_in,
-               T const * const A_,  int const ldA,
-               T const * const B_,  int const ldB,
-               T const beta_in,
-               T * C_,  int const ldC)
+                T const alpha_in,
+                T const * const A_,  int const ldA,
+                T const * const B_,  int const ldB,
+                T const beta_in,
+                T * C_,  int const ldC,
+                volatile char* shmem)
+{
+        // V100 tuning
+        int const GPU_NN_T1 = 32;
+        if (sizeof(T) == sizeof(double)) {
+                switch (mm) {
+                case 1:
+                        kgemm_nn3<T, Tc, GPU_NN_T1, 1, 4>((volatile T*) shmem, GPU_NN_T1, 2,
+                                                          mm, nn, kk,
+                                                          alpha_in,
+                                                          A_, ldA,
+                                                          B_, ldB,
+                                                          beta_in,
+                                                          C_, ldC);
+                        break;
+                case 2:
+                        kgemm_nn3<T, Tc, GPU_NN_T1, 2, 4>((volatile T*) shmem, GPU_NN_T1, 2,
+                                                          mm, nn, kk,
+                                                          alpha_in,
+                                                          A_, ldA,
+                                                          B_, ldB,
+                                                          beta_in,
+                                                          C_, ldC);
+                        break;
+                case 3:
+                        kgemm_nn3<T, Tc, GPU_NN_T1, 3, 4>((volatile T*) shmem, GPU_NN_T1, 2,
+                                                          mm, nn, kk,
+                                                          alpha_in,
+                                                          A_, ldA,
+                                                          B_, ldB,
+                                                          beta_in,
+                                                          C_, ldC);
+                        break;
+                case 4:
+                        kgemm_nn3<T, Tc, GPU_NN_T1, 4, 4>((volatile T*) shmem, GPU_NN_T1, 2,
+                                                          mm, nn, kk,
+                                                          alpha_in,
+                                                          A_, ldA,
+                                                          B_, ldB,
+                                                          beta_in,
+                                                          C_, ldC);
+                        break;
+                case 5:
+                        kgemm_nn3<T, Tc, GPU_NN_T1, 5, 4>((volatile T*) shmem, GPU_NN_T1, 2,
+                                                          mm, nn, kk,
+                                                          alpha_in,
+                                                          A_, ldA,
+                                                          B_, ldB,
+                                                          beta_in,
+                                                          C_, ldC);
+                        break;
+                case 6:
+                        kgemm_nn3<T, Tc, GPU_NN_T1, 6, 4>((volatile T*) shmem, GPU_NN_T1, 2,
+                                                          mm, nn, kk,
+                                                          alpha_in,
+                                                          A_, ldA,
+                                                          B_, ldB,
+                                                          beta_in,
+                                                          C_, ldC);
+                        break;
+                case 7:
+                        kgemm_nn3<T, Tc, GPU_NN_T1, 7, 4>((volatile T*) shmem, GPU_NN_T1, 2,
+                                                          mm, nn, kk,
+                                                          alpha_in,
+                                                          A_, ldA,
+                                                          B_, ldB,
+                                                          beta_in,
+                                                          C_, ldC);
+                        break;
+                case 8:
+                        kgemm_nn3<T, Tc, GPU_NN_T1, 8, 4>((volatile T*) shmem, GPU_NN_T1, 2,
+                                                          mm, nn, kk,
+                                                          alpha_in,
+                                                          A_, ldA,
+                                                          B_, ldB,
+                                                          beta_in,
+                                                          C_, ldC);
+                        break;
+                case 9:
+                        kgemm_nn3<T, Tc, GPU_NN_T1, 9, 4>((volatile T*) shmem, GPU_NN_T1, 2,
+                                                          mm, nn, kk,
+                                                          alpha_in,
+                                                          A_, ldA,
+                                                          B_, ldB,
+                                                          beta_in,
+                                                          C_, ldC);
+                        break;
+                case 10:
+                        kgemm_nn3<T, Tc, GPU_NN_T1, 10, 4>((volatile T*) shmem, GPU_NN_T1, 2,
+                                                            mm, nn, kk,
+                                                            alpha_in,
+                                                            A_, ldA,
+                                                            B_, ldB,
+                                                            beta_in,
+                                                            C_, ldC);
+                        break;
+                default:
+                        kgemm_nn3<T, Tc, GPU_NN_T1, 10, 4>((volatile T*) shmem, GPU_NN_T1, 2,
+                                                            mm, nn, kk,
+                                                            alpha_in,
+                                                            A_, ldA,
+                                                            B_, ldB,
+                                                            beta_in,
+                                                            C_, ldC);
+                        break;
+                }
+        } else {
+                switch (mm) {
+                case 1:
+                        kgemm_nn3<T, Tc, GPU_NN_T1, 1, 4>((volatile T*) shmem, GPU_NN_T1, 2,
+                                                          mm, nn, kk,
+                                                          alpha_in,
+                                                          A_, ldA,
+                                                          B_, ldB,
+                                                          beta_in,
+                                                          C_, ldC);
+                        break;
+                case 2:
+                        kgemm_nn3<T, Tc, GPU_NN_T1, 2, 4>((volatile T*) shmem, GPU_NN_T1, 2,
+                                                          mm, nn, kk,
+                                                          alpha_in,
+                                                          A_, ldA,
+                                                          B_, ldB,
+                                                          beta_in,
+                                                          C_, ldC);
+                        break;
+                case 3:
+                        kgemm_nn3<T, Tc, GPU_NN_T1, 3, 4>((volatile T*) shmem, GPU_NN_T1, 2,
+                                                          mm, nn, kk,
+                                                          alpha_in,
+                                                          A_, ldA,
+                                                          B_, ldB,
+                                                          beta_in,
+                                                          C_, ldC);
+                        break;
+                case 4:
+                        kgemm_nn3<T, Tc, GPU_NN_T1, 4, 4>((volatile T*) shmem, GPU_NN_T1, 2,
+                                                          mm, nn, kk,
+                                                          alpha_in,
+                                                          A_, ldA,
+                                                          B_, ldB,
+                                                          beta_in,
+                                                          C_, ldC);
+                        break;
+                case 5:
+                        kgemm_nn3<T, Tc, GPU_NN_T1, 5, 4>((volatile T*) shmem, GPU_NN_T1, 2,
+                                                          mm, nn, kk,
+                                                          alpha_in,
+                                                          A_, ldA,
+                                                          B_, ldB,
+                                                          beta_in,
+                                                          C_, ldC);
+                        break;
+                case 6:
+                        kgemm_nn3<T, Tc, GPU_NN_T1, 6, 4>((volatile T*) shmem, GPU_NN_T1, 2,
+                                                          mm, nn, kk,
+                                                          alpha_in,
+                                                          A_, ldA,
+                                                          B_, ldB,
+                                                          beta_in,
+                                                          C_, ldC);
+                        break;
+                case 7:
+                        kgemm_nn3<T, Tc, GPU_NN_T1, 7, 4>((volatile T*) shmem, GPU_NN_T1, 2,
+                                                          mm, nn, kk,
+                                                          alpha_in,
+                                                          A_, ldA,
+                                                          B_, ldB,
+                                                          beta_in,
+                                                          C_, ldC);
+                        break;
+                case 8:
+                        kgemm_nn3<T, Tc, GPU_NN_T1, 8, 4>((volatile T*) shmem, GPU_NN_T1, 2,
+                                                          mm, nn, kk,
+                                                          alpha_in,
+                                                          A_, ldA,
+                                                          B_, ldB,
+                                                          beta_in,
+                                                          C_, ldC);
+                        break;
+                case 9:
+                        kgemm_nn3<T, Tc, GPU_NN_T1, 9, 4>((volatile T*) shmem, GPU_NN_T1, 2,
+                                                          mm, nn, kk,
+                                                          alpha_in,
+                                                          A_, ldA,
+                                                          B_, ldB,
+                                                          beta_in,
+                                                          C_, ldC);
+                        break;
+                case 10:
+                        kgemm_nn3<T, Tc, GPU_NN_T1, 10, 4>((volatile T*) shmem, GPU_NN_T1, 2,
+                                                            mm, nn, kk,
+                                                            alpha_in,
+                                                            A_, ldA,
+                                                            B_, ldB,
+                                                            beta_in,
+                                                            C_, ldC);
+                        break;
+                default:
+                        kgemm_nn3<T, Tc, GPU_NN_T1, 10, 4>((volatile T*) shmem, GPU_NN_T1, 2,
+                                                            mm, nn, kk,
+                                                            alpha_in,
+                                                            A_, ldA,
+                                                            B_, ldB,
+                                                            beta_in,
+                                                            C_, ldC);
+                        break;
+                }
+        }
+}
+#else
+template<typename T, typename Tc>
+DEVICE_FUNCTION
+void kgemm_nn2( int const mm, int const nn, int const kk, 
+                T const alpha_in,
+                T const * const A_,  int const ldA,
+                T const * const B_,  int const ldB,
+                T const beta_in,
+                T * C_,  int const ldC,
+                volatile char* shmem)
 {
 #ifdef USE_LAMBDA
         auto min = []( int const x, int const y) {
@@ -102,7 +513,6 @@ void kgemm_nn2( int const mm, int const nn, int const kk,
 #define C(ic,jc)  C_[indx2f(ic,jc,ldC)]
 
 #endif
-
 
         for(int istart=1; istart <= mm;  istart += nb) {
 
@@ -190,8 +600,7 @@ void kgemm_nn2( int const mm, int const nn, int const kk,
             }; // end istart
         }; // end jstart
 }
-
-
+#endif
 
 
 template<typename T>
@@ -201,11 +610,12 @@ void kgemm_nn( int const mm, int const nn, int const kk,
                T const * const A_,  int const ldA,
                T const * const B_,  int const ldB,
                T const beta,
-               T * C_,  int const ldC)
+               T * C_,  int const ldC,
+               volatile char* shmem)
 {
  kgemm_nn2<T,T>(
            mm,nn,kk, alpha, A_,ldA, B_,ldB,
-           beta, C_,ldC);
+           beta, C_,ldC,shmem);
 }
 
 
@@ -219,11 +629,12 @@ void kgemm_nn( int const mm, int const nn, int const kk,
                float const * const A_,  int const ldA,
                float const * const B_,  int const ldB,
                float const beta,
-               float * C_,  int const ldC)
+               float * C_,  int const ldC,
+               volatile char* shmem)
 {
  kgemm_nn2<float,double>(
            mm,nn,kk, alpha, A_,ldA, B_,ldB,
-           beta, C_,ldC);
+           beta, C_,ldC,shmem);
 }
 
 #undef min

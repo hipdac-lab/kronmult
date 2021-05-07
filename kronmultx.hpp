@@ -30,7 +30,8 @@ void kronmultx( int const n,
                 T   X_[],
                 T   Y_[],
                 T   W_[],
-	        int const lda_in = 0 )
+	        int const lda_in,
+                volatile char* shmem = NULL)
 {
   // -----------------
   // note A1 is n by n
@@ -52,7 +53,7 @@ void kronmultx( int const n,
 			m5,n5,A5_,ld5,
 			m6,n6,A6_,ld6,
 			nvec,
-			X_, Y_, W_ );
+			X_, Y_, W_, shmem );
 
 }
 

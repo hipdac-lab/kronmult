@@ -1,5 +1,6 @@
 #include "hip/hip_runtime.h"
 #include "kroncommon.hpp"
+#include "kernel_context.hpp"
 #include "kgemm_nn_batched.hpp"
 
 
@@ -18,16 +19,17 @@ void kgemm_nn_batched( int const mm, int const nn, int const kk,
 {
 #ifdef USE_GPU
         int constexpr warpsize = WARPSIZE;
-        int constexpr nwarps = 1;
+        int constexpr nwarps = 4;
         int constexpr nthreads = nwarps * warpsize;
 
-        hipLaunchKernelGGL(HIP_KERNEL_NAME(kgemm_nn_batched<double>), dim3(batchCount), dim3(nthreads), 0, 0,  mm,nn,kk,
-                          alpha,
-                          Aarray_, ldAarray_,
-                          Barray_, ldBarray_,
-                          beta,
-                          Carray_, ldCarray_,
-                          batchCount );
+        hipLaunchKernelGGL(HIP_KERNEL_NAME(kgemm_nn_batched<double>), dim3(batchCount), dim3(nthreads), 
+                           get_max_shmem<double>(mm), 0,  mm,nn,kk,
+                           alpha,
+                           Aarray_, ldAarray_,
+                           Barray_, ldBarray_,
+                           beta,
+                           Carray_, ldCarray_,
+                           batchCount );
 #else
         kgemm_nn_batched<double>( mm,nn,kk,
                           alpha,

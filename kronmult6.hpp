@@ -25,7 +25,8 @@ void kronmult6( int const n,
                 T   X_[],
                 T   Y_[],
                 T   W_[],
-	        int const lda_in = 0 )
+	        int const lda_in = 0,
+                volatile char* shmem = NULL)
 // -----------------
 // note A1 is n by n
 //      X is (n^6 by nvec)
@@ -35,7 +36,7 @@ void kronmult6( int const n,
     kronmultx<T,ndim>(
                       n, nvec,
                       A1_,A2_,A3_,A4_,A5_,A6_,
-                      X_,Y_,W_,lda_in );
+                      X_,Y_,W_,lda_in, shmem );
 }
 
 #endif

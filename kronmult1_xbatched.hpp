@@ -6,7 +6,6 @@
 
 
 
-
 // --------------------------------------------------------------------
 // Performs  Y(:,k) += kron(A1(k),...,A1(k)) * X(:,k), k=1:batchCount
 // Note  result in Y but X and W may be modified as temporary work space
@@ -35,9 +34,14 @@ void kronmult1_xbatched(
 //
 //
 {
+#ifdef USE_GPU
+        extern __shared__ char* shmem;
+#else
+        char* shmem = NULL;
+#endif
         int constexpr ndim = 1;
 	kronmult_xbatched<T,ndim>(
-			n, Aarray_, lda, pX_, pY_, pW_, batchCount, subbatchCount );
+                n, Aarray_, lda, pX_, pY_, pW_, batchCount, subbatchCount, shmem );
 }
 
 

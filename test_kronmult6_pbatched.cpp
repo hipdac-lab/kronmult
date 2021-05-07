@@ -6,6 +6,7 @@
 #include <string.h>
 
 #include "kroncommon.hpp"
+#include "kernel_context.hpp"
 #include "kronmult6_pbatched.hpp"
 #include "kronmult5_pbatched.hpp"
 #include "kronmult4_pbatched.hpp"
@@ -269,42 +270,42 @@ T test_kronmult_pbatched(  int const idim,
         // note  the input Zarray will be over-written
         // --------------------------------------------
         switch(idim) { 
-        case 1:  hipLaunchKernelGGL(HIP_KERNEL_NAME(kronmult1_pbatched<T>), dim3(batchCount), dim3(nthreads ), 0, 0,  n,
+        case 1:  hipLaunchKernelGGL(HIP_KERNEL_NAME(kronmult1_pbatched<T>), dim3(batchCount), dim3(nthreads ), get_max_shmem<T>(n), 0,  n,
                            dAarray_,
                            dpdZarray_,
                            dpdYarray_,
                            dpdWarray_,
                            batchCount );
             break;
-        case 2:  hipLaunchKernelGGL(HIP_KERNEL_NAME(kronmult2_pbatched<T>), dim3(batchCount), dim3(nthreads ), 0, 0,  n,
+        case 2:  hipLaunchKernelGGL(HIP_KERNEL_NAME(kronmult2_pbatched<T>), dim3(batchCount), dim3(nthreads ), get_max_shmem<T>(n), 0,  n,
                            dAarray_,
                            dpdZarray_,
                            dpdYarray_,
                            dpdWarray_,
                            batchCount );
             break;
-        case 3:  hipLaunchKernelGGL(HIP_KERNEL_NAME(kronmult3_pbatched<T>), dim3(batchCount), dim3(nthreads ), 0, 0,  n,
+        case 3:  hipLaunchKernelGGL(HIP_KERNEL_NAME(kronmult3_pbatched<T>), dim3(batchCount), dim3(nthreads ), get_max_shmem<T>(n), 0,  n,
                            dAarray_,
                            dpdZarray_,
                            dpdYarray_,
                            dpdWarray_,
                            batchCount );
             break;
-        case 4:  hipLaunchKernelGGL(HIP_KERNEL_NAME(kronmult4_pbatched<T>), dim3(batchCount), dim3(nthreads ), 0, 0,  n,
+        case 4:  hipLaunchKernelGGL(HIP_KERNEL_NAME(kronmult4_pbatched<T>), dim3(batchCount), dim3(nthreads ), get_max_shmem<T>(n), 0,  n,
                            dAarray_,
                            dpdZarray_,
                            dpdYarray_,
                            dpdWarray_,
                            batchCount );
             break;
-        case 5:  hipLaunchKernelGGL(HIP_KERNEL_NAME(kronmult5_pbatched<T>), dim3(batchCount), dim3(nthreads ), 0, 0,  n,
+        case 5:  hipLaunchKernelGGL(HIP_KERNEL_NAME(kronmult5_pbatched<T>), dim3(batchCount), dim3(nthreads ), get_max_shmem<T>(n), 0,  n,
                            dAarray_,
                            dpdZarray_,
                            dpdYarray_,
                            dpdWarray_,
                            batchCount );
             break;
-        case 6:  hipLaunchKernelGGL(HIP_KERNEL_NAME(kronmult6_pbatched<T>), dim3(batchCount), dim3(nthreads ), 0, 0,  n,
+        case 6:  hipLaunchKernelGGL(HIP_KERNEL_NAME(kronmult6_pbatched<T>), dim3(batchCount), dim3(nthreads ), get_max_shmem<T>(n), 0,  n,
                            dAarray_,
                            dpdZarray_,
                            dpdYarray_,

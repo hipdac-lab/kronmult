@@ -15,6 +15,7 @@
 #endif
 
 #include "kroncommon.hpp"
+#include "kernel_context.hpp"
 #include "kgemm_nt_batched.hpp"
 
 static inline
@@ -362,13 +363,14 @@ T test_kgemm_nt_batched( int const mm,
         assert( istat_sync_start == hipSuccess );
 
 
-        hipLaunchKernelGGL(HIP_KERNEL_NAME(kgemm_nt_batched<T>), dim3(batchCount), dim3(nthreads ), 0, 0,  mm,nn,kk, 
-                          alpha,
-                          ddAarray_, dldAarray_,
-                          ddBarray_, dldBarray_,
-                          beta, 
-                          ddCarray_, dldCarray_,
-                          batchCount);
+        hipLaunchKernelGGL(HIP_KERNEL_NAME(kgemm_nt_batched<T>), dim3(batchCount), dim3(nthreads ), 
+                           get_max_shmem<T>(nn), 0,  mm,nn,kk, 
+                           alpha,
+                           ddAarray_, dldAarray_,
+                           ddBarray_, dldBarray_,
+                           beta, 
+                           ddCarray_, dldCarray_,
+                           batchCount);
 
         hipError_t istat_sync_end = hipDeviceSynchronize();
         assert( istat_sync_end == hipSuccess );
@@ -528,6 +530,7 @@ int main_func( double const tol)
         int const batchCount_max = 2*inc + 1;
 
         int nerrors = 0;
+
         for(int batchCount=1; batchCount <= batchCount_max; batchCount += inc) {
         for(int kk=1; kk <= kk_max; kk += inc) {
         for(int nn=1; nn <= nn_max; nn += inc) {

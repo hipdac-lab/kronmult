@@ -69,6 +69,22 @@ float atomicAdd( float volatile *p, float dvalue)
 #ifdef USE_LAMBDA
 static inline
 HOST_FUNCTION DEVICE_FUNCTION
+int indx2z( int const i, 
+            int const j, 
+            int const ld )
+{
+         // return( i-1+(j-1)*ld );
+	 return( i + j*ld );
+}
+#else
+
+#define indx2z(i,j,ld)  (  (i) + (j) * (ld) )
+
+#endif
+
+#ifdef USE_LAMBDA
+static inline
+HOST_FUNCTION DEVICE_FUNCTION
 int indx2f( int const i, 
             int const j, 
             int const ld )

@@ -1,0 +1,57 @@
+Detecting CXX [-std=c++1z] compiler features failed to compile with the following output:
+Change Dir: /home/cjrivera1/research/KRONMULT/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake cmTC_8c32b/fast 
+/usr/bin/gmake -f CMakeFiles/cmTC_8c32b.dir/build.make CMakeFiles/cmTC_8c32b.dir/build
+gmake[1]: Entering directory `/home/cjrivera1/research/KRONMULT/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_8c32b.dir/feature_tests.cxx.o
+/opt/hip-3.10/bin/hipcc    -std=c++1z -o CMakeFiles/cmTC_8c32b.dir/feature_tests.cxx.o -c /home/cjrivera1/research/KRONMULT/build/CMakeFiles/feature_tests.cxx
+nvcc fatal   : Value 'c++1z' is not defined for option 'std'
+gmake[1]: *** [CMakeFiles/cmTC_8c32b.dir/feature_tests.cxx.o] Error 1
+gmake[1]: Leaving directory `/home/cjrivera1/research/KRONMULT/build/CMakeFiles/CMakeTmp'
+gmake: *** [cmTC_8c32b/fast] Error 2
+
+
+
+Detecting CXX OpenMP failed with the following output:
+Change Dir: /home/cjrivera1/research/KRONMULT/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake cmTC_fccd3/fast 
+/usr/bin/gmake -f CMakeFiles/cmTC_fccd3.dir/build.make CMakeFiles/cmTC_fccd3.dir/build
+gmake[1]: Entering directory `/home/cjrivera1/research/KRONMULT/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_fccd3.dir/OpenMPTryFlag.cpp.o
+/opt/hip-3.10/bin/hipcc    -fopenmp -v   -o CMakeFiles/cmTC_fccd3.dir/OpenMPTryFlag.cpp.o -c /home/cjrivera1/research/KRONMULT/build/CMakeFiles/FindOpenMP/OpenMPTryFlag.cpp
+nvcc fatal   : Unknown option '-fopenmp'
+gmake[1]: *** [CMakeFiles/cmTC_fccd3.dir/OpenMPTryFlag.cpp.o] Error 1
+gmake[1]: Leaving directory `/home/cjrivera1/research/KRONMULT/build/CMakeFiles/CMakeTmp'
+gmake: *** [cmTC_fccd3/fast] Error 2
+
+
+Detecting CXX OpenMP failed with the following output:
+Change Dir: /home/cjrivera1/research/KRONMULT/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake cmTC_01cbb/fast 
+/usr/bin/gmake -f CMakeFiles/cmTC_01cbb.dir/build.make CMakeFiles/cmTC_01cbb.dir/build
+gmake[1]: Entering directory `/home/cjrivera1/research/KRONMULT/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_01cbb.dir/OpenMPTryFlag.cpp.o
+/opt/hip-3.10/bin/hipcc    -fopenmp -v   -o CMakeFiles/cmTC_01cbb.dir/OpenMPTryFlag.cpp.o -c /home/cjrivera1/research/KRONMULT/build/CMakeFiles/FindOpenMP/OpenMPTryFlag.cpp
+nvcc fatal   : Unknown option '-fopenmp'
+gmake[1]: *** [CMakeFiles/cmTC_01cbb.dir/OpenMPTryFlag.cpp.o] Error 1
+gmake[1]: Leaving directory `/home/cjrivera1/research/KRONMULT/build/CMakeFiles/CMakeTmp'
+gmake: *** [cmTC_01cbb/fast] Error 2
+
+
+Detecting CXX OpenMP failed with the following output:
+Change Dir: /home/cjrivera1/research/KRONMULT/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake cmTC_c0eff/fast 
+/usr/bin/gmake -f CMakeFiles/cmTC_c0eff.dir/build.make CMakeFiles/cmTC_c0eff.dir/build
+gmake[1]: Entering directory `/home/cjrivera1/research/KRONMULT/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_c0eff.dir/OpenMPTryFlag.cpp.o
+/opt/hip-3.10/bin/hipcc    -fopenmp -v   -o CMakeFiles/cmTC_c0eff.dir/OpenMPTryFlag.cpp.o -c /home/cjrivera1/research/KRONMULT/build/CMakeFiles/FindOpenMP/OpenMPTryFlag.cpp
+nvcc fatal   : Unknown option '-fopenmp'
+gmake[1]: *** [CMakeFiles/cmTC_c0eff.dir/OpenMPTryFlag.cpp.o] Error 1
+gmake[1]: Leaving directory `/home/cjrivera1/research/KRONMULT/build/CMakeFiles/CMakeTmp'
+gmake: *** [cmTC_c0eff/fast] Error 2
+
+

@@ -22,6 +22,11 @@ void kgemm_nn_batched( int const mm, int const nn, int const kk,
 // use Fortran 1-based indexing
 // ----------------------------
 
+#ifdef USE_GPU
+        extern __shared__ char shmem[];
+#else
+        char* shmem = NULL;
+#endif
 
         auto Aarray = [=] (int const i) -> T* const & {
                 return(  Aarray_[ (i) - 1] );
@@ -69,7 +74,7 @@ void kgemm_nn_batched( int const mm, int const nn, int const kk,
                 int const ldC = ldCarray(ibatch);
 
                 kgemm_nn( mm,nn,kk,  alpha, A_, ldA, B_, ldB, 
-                                     beta,  C_, ldC );
+                          beta,  C_, ldC, shmem );
         };
 }
 

@@ -1,0 +1,155 @@
+The system is: Linux - 3.10.0-1160.11.1.el7.x86_64 - x86_64
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /opt/hip-3.10/bin/hipcc 
+Build flags: 
+Id flags:  
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+
+The CXX compiler identification is GNU, found in "/home/cjrivera1/research/KRONMULT/build/CMakeFiles/3.14.6/CompilerIdCXX/a.out"
+
+Determining if the CXX compiler works passed with the following output:
+Change Dir: /home/cjrivera1/research/KRONMULT/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake cmTC_f09a6/fast 
+/usr/bin/gmake -f CMakeFiles/cmTC_f09a6.dir/build.make CMakeFiles/cmTC_f09a6.dir/build
+gmake[1]: Entering directory `/home/cjrivera1/research/KRONMULT/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_f09a6.dir/testCXXCompiler.cxx.o
+/opt/hip-3.10/bin/hipcc     -o CMakeFiles/cmTC_f09a6.dir/testCXXCompiler.cxx.o -c /home/cjrivera1/research/KRONMULT/build/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
+Linking CXX executable cmTC_f09a6
+/usr/bin/cmake3 -E cmake_link_script CMakeFiles/cmTC_f09a6.dir/link.txt --verbose=1
+/opt/hip-3.10/bin/hipcc       CMakeFiles/cmTC_f09a6.dir/testCXXCompiler.cxx.o  -o cmTC_f09a6 
+gmake[1]: Leaving directory `/home/cjrivera1/research/KRONMULT/build/CMakeFiles/CMakeTmp'
+
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: /home/cjrivera1/research/KRONMULT/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake cmTC_674cf/fast 
+/usr/bin/gmake -f CMakeFiles/cmTC_674cf.dir/build.make CMakeFiles/cmTC_674cf.dir/build
+gmake[1]: Entering directory `/home/cjrivera1/research/KRONMULT/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_674cf.dir/CMakeCXXCompilerABI.cpp.o
+/opt/hip-3.10/bin/hipcc    -v -o CMakeFiles/cmTC_674cf.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake3/Modules/CMakeCXXCompilerABI.cpp
+#$ _NVVM_BRANCH_=nvvm
+#$ _SPACE_= 
+#$ _CUDART_=cudart
+#$ _HERE_=/usr/local/cuda/bin
+#$ _THERE_=/usr/local/cuda/bin
+#$ _TARGET_SIZE_=
+#$ _TARGET_DIR_=
+#$ _TARGET_DIR_=targets/x86_64-linux
+#$ TOP=/usr/local/cuda/bin/..
+#$ NVVMIR_LIBRARY_DIR=/usr/local/cuda/bin/../nvvm/libdevice
+#$ LD_LIBRARY_PATH=/usr/local/cuda/bin/../lib:/opt/ohpc/pub/modulefiles/software/zlib/1.2.11/lib:/opt/ohpc/pub/libs/gnu7/openmpi3/scalapack/2.0.2/lib:/opt/ohpc/pub/libs/gnu7/openblas/0.2.20/lib:/opt/ohpc/pub/libs/gnu7/openmpi3/fftw/3.3.7/lib:/usr/local/cuda/lib64:/opt/ohpc/pub/mpi/openmpi3-gnu7/3.1.0/lib:/opt/ohpc/pub/compiler/gcc/7.3.0/lib64
+#$ PATH=/usr/local/cuda/bin/../nvvm/bin:/usr/local/cuda/bin:/opt/rocm-4.0.0/bin:/opt/ohpc/pub/libs/gnu7/openblas/0.2.20/bin:/opt/ohpc/pub/libs/gnu7/openmpi3/fftw/3.3.7/bin:/opt/hip-3.10/bin:/usr/local/cuda/bin:/usr/lib64/qt-3.3/bin:/opt/ohpc/pub/mpi/openmpi3-gnu7/3.1.0/bin:/opt/ohpc/pub/compiler/gcc/7.3.0/bin:/opt/ohpc/pub/utils/prun/1.2:/opt/ohpc/pub/utils/autotools/bin:/opt/ohpc/pub/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/ibutils/bin:/opt/dell/srvadmin/bin:/home/cjrivera1/.local/bin:/home/cjrivera1/bin:/usr/local/cuda/bin
+#$ INCLUDES="-I/usr/local/cuda/bin/../targets/x86_64-linux/include"  
+#$ LIBRARIES=  "-L/usr/local/cuda/bin/../targets/x86_64-linux/lib/stubs" "-L/usr/local/cuda/bin/../targets/x86_64-linux/lib"
+#$ CUDAFE_FLAGS=
+#$ PTXAS_FLAGS=
+#$ gcc -D__CUDA_ARCH__=520 -E -x c++  -DCUDA_DOUBLE_MATH_FUNCTIONS -D__CUDACC__ -D__NVCC__  "-I/usr/local/cuda/bin/../targets/x86_64-linux/include"   -isystem "/usr/local/cuda/include" -isystem "/opt/hip-3.10/include"  -D__CUDACC_VER_MAJOR__=11 -D__CUDACC_VER_MINOR__=2 -D__CUDACC_VER_BUILD__=67 -D__CUDA_API_VER_MAJOR__=11 -D__CUDA_API_VER_MINOR__=2 -include "cuda_runtime.h" -m64 "/usr/share/cmake3/Modules/CMakeCXXCompilerABI.cpp" -o "/tmp/tmpxft_000135a1_00000000-7_CMakeCXXCompilerABI.cpp1.ii" 
+#$ cicc --c++14 --gnu_version=70300 --orig_src_file_name "/usr/share/cmake3/Modules/CMakeCXXCompilerABI.cpp" --allow_managed   -arch compute_52 -m64 --no-version-ident -ftz=0 -prec_div=1 -prec_sqrt=1 -fmad=1 --include_file_name "tmpxft_000135a1_00000000-3_CMakeCXXCompilerABI.fatbin.c" -tused --gen_module_id_file --module_id_file_name "/tmp/tmpxft_000135a1_00000000-4_CMakeCXXCompilerABI.module_id" --gen_c_file_name "/tmp/tmpxft_000135a1_00000000-6_CMakeCXXCompilerABI.cudafe1.c" --stub_file_name "/tmp/tmpxft_000135a1_00000000-6_CMakeCXXCompilerABI.cudafe1.stub.c" --gen_device_file_name "/tmp/tmpxft_000135a1_00000000-6_CMakeCXXCompilerABI.cudafe1.gpu"  "/tmp/tmpxft_000135a1_00000000-7_CMakeCXXCompilerABI.cpp1.ii" -o "/tmp/tmpxft_000135a1_00000000-6_CMakeCXXCompilerABI.ptx"
+#$ ptxas -arch=sm_52 -m64  "/tmp/tmpxft_000135a1_00000000-6_CMakeCXXCompilerABI.ptx"  -o "/tmp/tmpxft_000135a1_00000000-8_CMakeCXXCompilerABI.sm_52.cubin" 
+#$ fatbinary -64 --cicc-cmdline="-ftz=0 -prec_div=1 -prec_sqrt=1 -fmad=1 " "--image3=kind=elf,sm=52,file=/tmp/tmpxft_000135a1_00000000-8_CMakeCXXCompilerABI.sm_52.cubin" "--image3=kind=ptx,sm=52,file=/tmp/tmpxft_000135a1_00000000-6_CMakeCXXCompilerABI.ptx" --embedded-fatbin="/tmp/tmpxft_000135a1_00000000-3_CMakeCXXCompilerABI.fatbin.c" 
+#$ rm /tmp/tmpxft_000135a1_00000000-3_CMakeCXXCompilerABI.fatbin
+#$ gcc -E -x c++ -D__CUDACC__ -D__NVCC__  "-I/usr/local/cuda/bin/../targets/x86_64-linux/include"   -isystem "/usr/local/cuda/include" -isystem "/opt/hip-3.10/include"  -D__CUDACC_VER_MAJOR__=11 -D__CUDACC_VER_MINOR__=2 -D__CUDACC_VER_BUILD__=67 -D__CUDA_API_VER_MAJOR__=11 -D__CUDA_API_VER_MINOR__=2 -include "cuda_runtime.h" -m64 "/usr/share/cmake3/Modules/CMakeCXXCompilerABI.cpp" -o "/tmp/tmpxft_000135a1_00000000-5_CMakeCXXCompilerABI.cpp4.ii" 
+#$ cudafe++ --c++14 --gnu_version=70300 --orig_src_file_name "/usr/share/cmake3/Modules/CMakeCXXCompilerABI.cpp" --allow_managed  --m64 --parse_templates --gen_c_file_name "/tmp/tmpxft_000135a1_00000000-6_CMakeCXXCompilerABI.cudafe1.cpp" --stub_file_name "tmpxft_000135a1_00000000-6_CMakeCXXCompilerABI.cudafe1.stub.c" --module_id_file_name "/tmp/tmpxft_000135a1_00000000-4_CMakeCXXCompilerABI.module_id" "/tmp/tmpxft_000135a1_00000000-5_CMakeCXXCompilerABI.cpp4.ii" 
+#$ gcc -D__CUDA_ARCH__=520 -c -x c++  -DCUDA_DOUBLE_MATH_FUNCTIONS "-I/usr/local/cuda/bin/../targets/x86_64-linux/include"   -isystem "/usr/local/cuda/include" -isystem "/opt/hip-3.10/include" -m64 "/tmp/tmpxft_000135a1_00000000-6_CMakeCXXCompilerABI.cudafe1.cpp" -o "CMakeFiles/cmTC_674cf.dir/CMakeCXXCompilerABI.cpp.o" 
+Linking CXX executable cmTC_674cf
+/usr/bin/cmake3 -E cmake_link_script CMakeFiles/cmTC_674cf.dir/link.txt --verbose=1
+/opt/hip-3.10/bin/hipcc      -v CMakeFiles/cmTC_674cf.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_674cf 
+#$ _NVVM_BRANCH_=nvvm
+#$ _SPACE_= 
+#$ _CUDART_=cudart
+#$ _HERE_=/usr/local/cuda/bin
+#$ _THERE_=/usr/local/cuda/bin
+#$ _TARGET_SIZE_=
+#$ _TARGET_DIR_=
+#$ _TARGET_DIR_=targets/x86_64-linux
+#$ TOP=/usr/local/cuda/bin/..
+#$ NVVMIR_LIBRARY_DIR=/usr/local/cuda/bin/../nvvm/libdevice
+#$ LD_LIBRARY_PATH=/usr/local/cuda/bin/../lib:/opt/ohpc/pub/modulefiles/software/zlib/1.2.11/lib:/opt/ohpc/pub/libs/gnu7/openmpi3/scalapack/2.0.2/lib:/opt/ohpc/pub/libs/gnu7/openblas/0.2.20/lib:/opt/ohpc/pub/libs/gnu7/openmpi3/fftw/3.3.7/lib:/usr/local/cuda/lib64:/opt/ohpc/pub/mpi/openmpi3-gnu7/3.1.0/lib:/opt/ohpc/pub/compiler/gcc/7.3.0/lib64
+#$ PATH=/usr/local/cuda/bin/../nvvm/bin:/usr/local/cuda/bin:/opt/rocm-4.0.0/bin:/opt/ohpc/pub/libs/gnu7/openblas/0.2.20/bin:/opt/ohpc/pub/libs/gnu7/openmpi3/fftw/3.3.7/bin:/opt/hip-3.10/bin:/usr/local/cuda/bin:/usr/lib64/qt-3.3/bin:/opt/ohpc/pub/mpi/openmpi3-gnu7/3.1.0/bin:/opt/ohpc/pub/compiler/gcc/7.3.0/bin:/opt/ohpc/pub/utils/prun/1.2:/opt/ohpc/pub/utils/autotools/bin:/opt/ohpc/pub/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/ibutils/bin:/opt/dell/srvadmin/bin:/home/cjrivera1/.local/bin:/home/cjrivera1/bin:/usr/local/cuda/bin
+#$ INCLUDES="-I/usr/local/cuda/bin/../targets/x86_64-linux/include"  
+#$ LIBRARIES=  "-L/usr/local/cuda/bin/../targets/x86_64-linux/lib/stubs" "-L/usr/local/cuda/bin/../targets/x86_64-linux/lib"
+#$ CUDAFE_FLAGS=
+#$ PTXAS_FLAGS=
+#$ nvlink --arch=sm_52 --register-link-binaries="/tmp/tmpxft_000135b6_00000000-3_cmTC_674cf_dlink.reg.c"  -m64 -L"/usr/local/cuda/lib64" -lcuda -lcudart   "-L/usr/local/cuda/bin/../targets/x86_64-linux/lib/stubs" "-L/usr/local/cuda/bin/../targets/x86_64-linux/lib" -cpu-arch=X86_64 "CMakeFiles/cmTC_674cf.dir/CMakeCXXCompilerABI.cpp.o"  -lcudadevrt  -o "/tmp/tmpxft_000135b6_00000000-5_cmTC_674cf_dlink.sm_52.cubin"
+#$ fatbinary -64 -link "--image3=kind=elf,sm=52,file=/tmp/tmpxft_000135b6_00000000-5_cmTC_674cf_dlink.sm_52.cubin" --embedded-fatbin="/tmp/tmpxft_000135b6_00000000-4_cmTC_674cf_dlink.fatbin.c" 
+#$ rm /tmp/tmpxft_000135b6_00000000-4_cmTC_674cf_dlink.fatbin
+#$ gcc -c -x c++ -DFATBINFILE="\"/tmp/tmpxft_000135b6_00000000-4_cmTC_674cf_dlink.fatbin.c\"" -DREGISTERLINKBINARYFILE="\"/tmp/tmpxft_000135b6_00000000-3_cmTC_674cf_dlink.reg.c\"" -I. -D__NV_EXTRA_INITIALIZATION= -D__NV_EXTRA_FINALIZATION= -D__CUDA_INCLUDE_COMPILER_INTERNAL_HEADERS__  "-I/usr/local/cuda/bin/../targets/x86_64-linux/include"    -D__CUDACC_VER_MAJOR__=11 -D__CUDACC_VER_MINOR__=2 -D__CUDACC_VER_BUILD__=67 -D__CUDA_API_VER_MAJOR__=11 -D__CUDA_API_VER_MINOR__=2 -m64 "/usr/local/cuda/bin/crt/link.stub" -o "/tmp/tmpxft_000135b6_00000000-6_cmTC_674cf_dlink.o" 
+#$ g++ -m64 -Wl,--start-group "/tmp/tmpxft_000135b6_00000000-6_cmTC_674cf_dlink.o" "CMakeFiles/cmTC_674cf.dir/CMakeCXXCompilerABI.cpp.o" -L"/usr/local/cuda/lib64" -lcuda -lcudart   "-L/usr/local/cuda/bin/../targets/x86_64-linux/lib/stubs" "-L/usr/local/cuda/bin/../targets/x86_64-linux/lib"  -lcudadevrt  -lcudart_static  -lrt -lpthread  -ldl  -Wl,--end-group -o "cmTC_674cf" 
+gmake[1]: Leaving directory `/home/cjrivera1/research/KRONMULT/build/CMakeFiles/CMakeTmp'
+
+
+Parsed CXX implicit include dir info from above output: rv=start
+  warn: unable to parse implicit include dirs!
+
+
+Parsed CXX implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /home/cjrivera1/research/KRONMULT/build/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command(s):/usr/bin/gmake cmTC_674cf/fast ]
+  ignore line: [/usr/bin/gmake -f CMakeFiles/cmTC_674cf.dir/build.make CMakeFiles/cmTC_674cf.dir/build]
+  ignore line: [gmake[1]: Entering directory `/home/cjrivera1/research/KRONMULT/build/CMakeFiles/CMakeTmp']
+  ignore line: [Building CXX object CMakeFiles/cmTC_674cf.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [/opt/hip-3.10/bin/hipcc    -v -o CMakeFiles/cmTC_674cf.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake3/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [#$ _NVVM_BRANCH_=nvvm]
+  ignore line: [#$ _SPACE_= ]
+  ignore line: [#$ _CUDART_=cudart]
+  ignore line: [#$ _HERE_=/usr/local/cuda/bin]
+  ignore line: [#$ _THERE_=/usr/local/cuda/bin]
+  ignore line: [#$ _TARGET_SIZE_=]
+  ignore line: [#$ _TARGET_DIR_=]
+  ignore line: [#$ _TARGET_DIR_=targets/x86_64-linux]
+  ignore line: [#$ TOP=/usr/local/cuda/bin/..]
+  ignore line: [#$ NVVMIR_LIBRARY_DIR=/usr/local/cuda/bin/../nvvm/libdevice]
+  ignore line: [#$ LD_LIBRARY_PATH=/usr/local/cuda/bin/../lib:/opt/ohpc/pub/modulefiles/software/zlib/1.2.11/lib:/opt/ohpc/pub/libs/gnu7/openmpi3/scalapack/2.0.2/lib:/opt/ohpc/pub/libs/gnu7/openblas/0.2.20/lib:/opt/ohpc/pub/libs/gnu7/openmpi3/fftw/3.3.7/lib:/usr/local/cuda/lib64:/opt/ohpc/pub/mpi/openmpi3-gnu7/3.1.0/lib:/opt/ohpc/pub/compiler/gcc/7.3.0/lib64]
+  ignore line: [#$ PATH=/usr/local/cuda/bin/../nvvm/bin:/usr/local/cuda/bin:/opt/rocm-4.0.0/bin:/opt/ohpc/pub/libs/gnu7/openblas/0.2.20/bin:/opt/ohpc/pub/libs/gnu7/openmpi3/fftw/3.3.7/bin:/opt/hip-3.10/bin:/usr/local/cuda/bin:/usr/lib64/qt-3.3/bin:/opt/ohpc/pub/mpi/openmpi3-gnu7/3.1.0/bin:/opt/ohpc/pub/compiler/gcc/7.3.0/bin:/opt/ohpc/pub/utils/prun/1.2:/opt/ohpc/pub/utils/autotools/bin:/opt/ohpc/pub/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/ibutils/bin:/opt/dell/srvadmin/bin:/home/cjrivera1/.local/bin:/home/cjrivera1/bin:/usr/local/cuda/bin]
+  ignore line: [#$ INCLUDES="-I/usr/local/cuda/bin/../targets/x86_64-linux/include"  ]
+  ignore line: [#$ LIBRARIES=  "-L/usr/local/cuda/bin/../targets/x86_64-linux/lib/stubs" "-L/usr/local/cuda/bin/../targets/x86_64-linux/lib"]
+  ignore line: [#$ CUDAFE_FLAGS=]
+  ignore line: [#$ PTXAS_FLAGS=]
+  ignore line: [#$ gcc -D__CUDA_ARCH__=520 -E -x c++  -DCUDA_DOUBLE_MATH_FUNCTIONS -D__CUDACC__ -D__NVCC__  "-I/usr/local/cuda/bin/../targets/x86_64-linux/include"   -isystem "/usr/local/cuda/include" -isystem "/opt/hip-3.10/include"  -D__CUDACC_VER_MAJOR__=11 -D__CUDACC_VER_MINOR__=2 -D__CUDACC_VER_BUILD__=67 -D__CUDA_API_VER_MAJOR__=11 -D__CUDA_API_VER_MINOR__=2 -include "cuda_runtime.h" -m64 "/usr/share/cmake3/Modules/CMakeCXXCompilerABI.cpp" -o "/tmp/tmpxft_000135a1_00000000-7_CMakeCXXCompilerABI.cpp1.ii" ]
+  ignore line: [#$ cicc --c++14 --gnu_version=70300 --orig_src_file_name "/usr/share/cmake3/Modules/CMakeCXXCompilerABI.cpp" --allow_managed   -arch compute_52 -m64 --no-version-ident -ftz=0 -prec_div=1 -prec_sqrt=1 -fmad=1 --include_file_name "tmpxft_000135a1_00000000-3_CMakeCXXCompilerABI.fatbin.c" -tused --gen_module_id_file --module_id_file_name "/tmp/tmpxft_000135a1_00000000-4_CMakeCXXCompilerABI.module_id" --gen_c_file_name "/tmp/tmpxft_000135a1_00000000-6_CMakeCXXCompilerABI.cudafe1.c" --stub_file_name "/tmp/tmpxft_000135a1_00000000-6_CMakeCXXCompilerABI.cudafe1.stub.c" --gen_device_file_name "/tmp/tmpxft_000135a1_00000000-6_CMakeCXXCompilerABI.cudafe1.gpu"  "/tmp/tmpxft_000135a1_00000000-7_CMakeCXXCompilerABI.cpp1.ii" -o "/tmp/tmpxft_000135a1_00000000-6_CMakeCXXCompilerABI.ptx"]
+  ignore line: [#$ ptxas -arch=sm_52 -m64  "/tmp/tmpxft_000135a1_00000000-6_CMakeCXXCompilerABI.ptx"  -o "/tmp/tmpxft_000135a1_00000000-8_CMakeCXXCompilerABI.sm_52.cubin" ]
+  ignore line: [#$ fatbinary -64 --cicc-cmdline="-ftz=0 -prec_div=1 -prec_sqrt=1 -fmad=1 " "--image3=kind=elf,sm=52,file=/tmp/tmpxft_000135a1_00000000-8_CMakeCXXCompilerABI.sm_52.cubin" "--image3=kind=ptx,sm=52,file=/tmp/tmpxft_000135a1_00000000-6_CMakeCXXCompilerABI.ptx" --embedded-fatbin="/tmp/tmpxft_000135a1_00000000-3_CMakeCXXCompilerABI.fatbin.c" ]
+  ignore line: [#$ rm /tmp/tmpxft_000135a1_00000000-3_CMakeCXXCompilerABI.fatbin]
+  ignore line: [#$ gcc -E -x c++ -D__CUDACC__ -D__NVCC__  "-I/usr/local/cuda/bin/../targets/x86_64-linux/include"   -isystem "/usr/local/cuda/include" -isystem "/opt/hip-3.10/include"  -D__CUDACC_VER_MAJOR__=11 -D__CUDACC_VER_MINOR__=2 -D__CUDACC_VER_BUILD__=67 -D__CUDA_API_VER_MAJOR__=11 -D__CUDA_API_VER_MINOR__=2 -include "cuda_runtime.h" -m64 "/usr/share/cmake3/Modules/CMakeCXXCompilerABI.cpp" -o "/tmp/tmpxft_000135a1_00000000-5_CMakeCXXCompilerABI.cpp4.ii" ]
+  ignore line: [#$ cudafe++ --c++14 --gnu_version=70300 --orig_src_file_name "/usr/share/cmake3/Modules/CMakeCXXCompilerABI.cpp" --allow_managed  --m64 --parse_templates --gen_c_file_name "/tmp/tmpxft_000135a1_00000000-6_CMakeCXXCompilerABI.cudafe1.cpp" --stub_file_name "tmpxft_000135a1_00000000-6_CMakeCXXCompilerABI.cudafe1.stub.c" --module_id_file_name "/tmp/tmpxft_000135a1_00000000-4_CMakeCXXCompilerABI.module_id" "/tmp/tmpxft_000135a1_00000000-5_CMakeCXXCompilerABI.cpp4.ii" ]
+  ignore line: [#$ gcc -D__CUDA_ARCH__=520 -c -x c++  -DCUDA_DOUBLE_MATH_FUNCTIONS "-I/usr/local/cuda/bin/../targets/x86_64-linux/include"   -isystem "/usr/local/cuda/include" -isystem "/opt/hip-3.10/include" -m64 "/tmp/tmpxft_000135a1_00000000-6_CMakeCXXCompilerABI.cudafe1.cpp" -o "CMakeFiles/cmTC_674cf.dir/CMakeCXXCompilerABI.cpp.o" ]
+  ignore line: [Linking CXX executable cmTC_674cf]
+  ignore line: [/usr/bin/cmake3 -E cmake_link_script CMakeFiles/cmTC_674cf.dir/link.txt --verbose=1]
+  ignore line: [/opt/hip-3.10/bin/hipcc      -v CMakeFiles/cmTC_674cf.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_674cf ]
+  ignore line: [#$ _NVVM_BRANCH_=nvvm]
+  ignore line: [#$ _SPACE_= ]
+  ignore line: [#$ _CUDART_=cudart]
+  ignore line: [#$ _HERE_=/usr/local/cuda/bin]
+  ignore line: [#$ _THERE_=/usr/local/cuda/bin]
+  ignore line: [#$ _TARGET_SIZE_=]
+  ignore line: [#$ _TARGET_DIR_=]
+  ignore line: [#$ _TARGET_DIR_=targets/x86_64-linux]
+  ignore line: [#$ TOP=/usr/local/cuda/bin/..]
+  ignore line: [#$ NVVMIR_LIBRARY_DIR=/usr/local/cuda/bin/../nvvm/libdevice]
+  ignore line: [#$ LD_LIBRARY_PATH=/usr/local/cuda/bin/../lib:/opt/ohpc/pub/modulefiles/software/zlib/1.2.11/lib:/opt/ohpc/pub/libs/gnu7/openmpi3/scalapack/2.0.2/lib:/opt/ohpc/pub/libs/gnu7/openblas/0.2.20/lib:/opt/ohpc/pub/libs/gnu7/openmpi3/fftw/3.3.7/lib:/usr/local/cuda/lib64:/opt/ohpc/pub/mpi/openmpi3-gnu7/3.1.0/lib:/opt/ohpc/pub/compiler/gcc/7.3.0/lib64]
+  ignore line: [#$ PATH=/usr/local/cuda/bin/../nvvm/bin:/usr/local/cuda/bin:/opt/rocm-4.0.0/bin:/opt/ohpc/pub/libs/gnu7/openblas/0.2.20/bin:/opt/ohpc/pub/libs/gnu7/openmpi3/fftw/3.3.7/bin:/opt/hip-3.10/bin:/usr/local/cuda/bin:/usr/lib64/qt-3.3/bin:/opt/ohpc/pub/mpi/openmpi3-gnu7/3.1.0/bin:/opt/ohpc/pub/compiler/gcc/7.3.0/bin:/opt/ohpc/pub/utils/prun/1.2:/opt/ohpc/pub/utils/autotools/bin:/opt/ohpc/pub/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/opt/ibutils/bin:/opt/dell/srvadmin/bin:/home/cjrivera1/.local/bin:/home/cjrivera1/bin:/usr/local/cuda/bin]
+  ignore line: [#$ INCLUDES="-I/usr/local/cuda/bin/../targets/x86_64-linux/include"  ]
+  ignore line: [#$ LIBRARIES=  "-L/usr/local/cuda/bin/../targets/x86_64-linux/lib/stubs" "-L/usr/local/cuda/bin/../targets/x86_64-linux/lib"]
+  ignore line: [#$ CUDAFE_FLAGS=]
+  ignore line: [#$ PTXAS_FLAGS=]
+  ignore line: [#$ nvlink --arch=sm_52 --register-link-binaries="/tmp/tmpxft_000135b6_00000000-3_cmTC_674cf_dlink.reg.c"  -m64 -L"/usr/local/cuda/lib64" -lcuda -lcudart   "-L/usr/local/cuda/bin/../targets/x86_64-linux/lib/stubs" "-L/usr/local/cuda/bin/../targets/x86_64-linux/lib" -cpu-arch=X86_64 "CMakeFiles/cmTC_674cf.dir/CMakeCXXCompilerABI.cpp.o"  -lcudadevrt  -o "/tmp/tmpxft_000135b6_00000000-5_cmTC_674cf_dlink.sm_52.cubin"]
+  ignore line: [#$ fatbinary -64 -link "--image3=kind=elf,sm=52,file=/tmp/tmpxft_000135b6_00000000-5_cmTC_674cf_dlink.sm_52.cubin" --embedded-fatbin="/tmp/tmpxft_000135b6_00000000-4_cmTC_674cf_dlink.fatbin.c" ]
+  ignore line: [#$ rm /tmp/tmpxft_000135b6_00000000-4_cmTC_674cf_dlink.fatbin]
+  ignore line: [#$ gcc -c -x c++ -DFATBINFILE="\"/tmp/tmpxft_000135b6_00000000-4_cmTC_674cf_dlink.fatbin.c\"" -DREGISTERLINKBINARYFILE="\"/tmp/tmpxft_000135b6_00000000-3_cmTC_674cf_dlink.reg.c\"" -I. -D__NV_EXTRA_INITIALIZATION= -D__NV_EXTRA_FINALIZATION= -D__CUDA_INCLUDE_COMPILER_INTERNAL_HEADERS__  "-I/usr/local/cuda/bin/../targets/x86_64-linux/include"    -D__CUDACC_VER_MAJOR__=11 -D__CUDACC_VER_MINOR__=2 -D__CUDACC_VER_BUILD__=67 -D__CUDA_API_VER_MAJOR__=11 -D__CUDA_API_VER_MINOR__=2 -m64 "/usr/local/cuda/bin/crt/link.stub" -o "/tmp/tmpxft_000135b6_00000000-6_cmTC_674cf_dlink.o" ]
+  ignore line: [#$ g++ -m64 -Wl,--start-group "/tmp/tmpxft_000135b6_00000000-6_cmTC_674cf_dlink.o" "CMakeFiles/cmTC_674cf.dir/CMakeCXXCompilerABI.cpp.o" -L"/usr/local/cuda/lib64" -lcuda -lcudart   "-L/usr/local/cuda/bin/../targets/x86_64-linux/lib/stubs" "-L/usr/local/cuda/bin/../targets/x86_64-linux/lib"  -lcudadevrt  -lcudart_static  -lrt -lpthread  -ldl  -Wl,--end-group -o "cmTC_674cf" ]
+  ignore line: [gmake[1]: Leaving directory `/home/cjrivera1/research/KRONMULT/build/CMakeFiles/CMakeTmp']
+  ignore line: []
+  implicit libs: []
+  implicit dirs: []
+  implicit fwks: []
+
+

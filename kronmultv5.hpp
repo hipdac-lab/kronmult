@@ -18,10 +18,11 @@ void kronmultv5( int const m1, int const n1, T const A1_[], int const ld1,
 		 int const m3, int const n3, T const A3_[], int const ld3,
 		 int const m4, int const n4, T const A4_[], int const ld4,
 		 int const m5, int const n5, T const A5_[], int const ld5,
-                int const nvec,
-                T   X_[],
-                T   Y_[],
-                T   W_[]
+                 int const nvec,
+                 T   X_[],
+                 T   Y_[],
+                 T   W_[],
+                 volatile char* shmem = NULL
 	        )
 // -----------------
 // note A1 is m1 by n1
@@ -44,7 +45,7 @@ void kronmultv5( int const m1, int const n1, T const A1_[], int const ld1,
 		    m5,n5,A5_,ld5,
 		    m6,n6,A6_,ld6,
 		    nvec,
-                    X_,Y_,W_);
+                    X_,Y_,W_, shmem);
 }
 
 #endif

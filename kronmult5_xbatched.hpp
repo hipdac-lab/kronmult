@@ -35,9 +35,14 @@ void kronmult5_xbatched(
 //
 //
 {
+#ifdef USE_GPU
+        extern __shared__ char* shmem;
+#else
+        char* shmem = NULL;
+#endif
         int constexpr ndim = 5;
 	kronmult_xbatched<T,ndim>(
-			n, Aarray_, lda, pX_, pY_, pW_, batchCount, subbatchCount );
+                n, Aarray_, lda, pX_, pY_, pW_, batchCount, subbatchCount, shmem );
 }
 
 

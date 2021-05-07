@@ -22,7 +22,8 @@ void kronmult1( int const n,
                 T   X_[],
                 T   Y_[],
                 T   W_[],
-	        int const lda_in = 0 )
+	        int const lda_in,
+                volatile char* shmem)
 // -----------------
 // note A1 is n by n
 //      X is (n by nvec)
@@ -33,7 +34,7 @@ void kronmult1( int const n,
 	int const m1 = n;
 	int const n1 = n;
 	int const ld1 = (lda_in == 0)? n : lda_in;
-	kronmultv1<T>( m1,n1, A1_, ld1, nvec, X_, Y_, W_ );
+	kronmultv1<T>( m1,n1, A1_, ld1, nvec, X_, Y_, W_, shmem );
 	return;
 	}
 #else

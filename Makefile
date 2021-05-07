@@ -10,6 +10,8 @@ KRONSRC=  \
 	kgemm_nt.cpp \
 	kgemm_nt.hpp \
 	kroncommon.hpp \
+	kernel_context.hpp \
+	kernel_context.cpp \
 	kronmult1_batched.cpp \
 	kronmult1_batched.hpp \
 	kronmult1_pbatched.cpp \
@@ -56,23 +58,23 @@ all: test_kgemm_nn_batched test_kgemm_nt_batched \
 	test_kronmult6_xbatched test_kronmult6_vbatched
 
 
-test_kgemm_nn_batched: test_kgemm_nn_batched.cpp kgemm_nn_batched.hpp kgemm_nn.hpp
-	$(CXX) $(CXXFLAGS) -o test_kgemm_nn_batched test_kgemm_nn_batched.cpp $(LIBS) 
+test_kgemm_nn_batched: test_kgemm_nn_batched.cpp kgemm_nn_batched.hpp kgemm_nn.hpp kernel_context.hpp
+	$(CXX) $(CXXFLAGS) -o test_kgemm_nn_batched test_kgemm_nn_batched.cpp kernel_context.cpp $(LIBS) 
 
-test_kgemm_nt_batched: test_kgemm_nt_batched.cpp kgemm_nt_batched.hpp kgemm_nt.hpp
-	$(CXX) $(CXXFLAGS) -o test_kgemm_nt_batched test_kgemm_nt_batched.cpp $(LIBS) 
+test_kgemm_nt_batched: test_kgemm_nt_batched.cpp kgemm_nt_batched.hpp kgemm_nt.hpp kernel_context.hpp
+	$(CXX) $(CXXFLAGS) -o test_kgemm_nt_batched test_kgemm_nt_batched.cpp kernel_context.cpp $(LIBS) 
 
-test_kronmult6_batched: test_kronmult6_batched.cpp $(KRONSRC)
-	$(CXX) $(CXXFLAGS) -o test_kronmult6_batched test_kronmult6_batched.cpp $(LIBS)
+test_kronmult6_batched: test_kronmult6_batched.cpp kernel_context.hpp $(KRONSRC)
+	$(CXX) $(CXXFLAGS) -o test_kronmult6_batched test_kronmult6_batched.cpp kernel_context.cpp $(LIBS)
 
-test_kronmult6_pbatched: test_kronmult6_pbatched.cpp $(KRONSRC)
-	$(CXX) $(CXXFLAGS) -o test_kronmult6_pbatched test_kronmult6_pbatched.cpp $(LIBS)
+test_kronmult6_pbatched: test_kronmult6_pbatched.cpp kernel_context.hpp $(KRONSRC)
+	$(CXX) $(CXXFLAGS) -o test_kronmult6_pbatched test_kronmult6_pbatched.cpp kernel_context.cpp $(LIBS)
 
-test_kronmult6_xbatched: test_kronmult6_xbatched.cpp $(KRONSRC)
-	$(CXX) $(CXXFLAGS) -o test_kronmult6_xbatched test_kronmult6_xbatched.cpp $(LIBS)
+test_kronmult6_xbatched: test_kronmult6_xbatched.cpp kernel_context.hpp $(KRONSRC)
+	$(CXX) $(CXXFLAGS) -o test_kronmult6_xbatched test_kronmult6_xbatched.cpp kernel_context.cpp $(LIBS)
 
-test_kronmult6_vbatched: test_kronmult6_vbatched.cpp $(KRONSRC)
-	$(CXX) $(CXXFLAGS) -o test_kronmult6_vbatched test_kronmult6_vbatched.cpp $(LIBS)
+test_kronmult6_vbatched: test_kronmult6_vbatched.cpp kernel_context.hpp $(KRONSRC)
+	$(CXX) $(CXXFLAGS) -o test_kronmult6_vbatched test_kronmult6_vbatched.cpp kernel_context.cpp $(LIBS)
 
 
 clean:

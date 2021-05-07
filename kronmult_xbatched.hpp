@@ -26,7 +26,8 @@ void kronmult_xbatched(
                        T* pY_[],
                        T* pW_[],
                        int const batchCount_in,
-		       int subbatchCount = 0)
+		       int subbatchCount = 0,
+                       volatile char* shmem = NULL)
 //
 // conceptual shape of Aarray is  (ndim,batchCount)
 //
@@ -142,12 +143,12 @@ void kronmult_xbatched(
                 int const nvec = 1;
 		switch(ndim)
                 {
-		case 1: {kronmult1( n, nvec, A1,                Xp, Yp, Wp, lda); break;}
-		case 2: {kronmult2( n, nvec, A1,A2,             Xp, Yp, Wp, lda); break;}
-		case 3: {kronmult3( n, nvec, A1,A2,A3,          Xp, Yp, Wp, lda); break;}
-		case 4: {kronmult4( n, nvec, A1,A2,A3,A4,       Xp, Yp, Wp, lda); break;}
-		case 5: {kronmult5( n, nvec, A1,A2,A3,A4,A5,    Xp, Yp, Wp, lda); break;}
-		case 6: {kronmult6( n, nvec, A1,A2,A3,A4,A5,A6, Xp, Yp, Wp, lda); break;}
+		case 1: {kronmult1( n, nvec, A1,                Xp, Yp, Wp, lda, shmem); break;}
+		case 2: {kronmult2( n, nvec, A1,A2,             Xp, Yp, Wp, lda, shmem); break;}
+		case 3: {kronmult3( n, nvec, A1,A2,A3,          Xp, Yp, Wp, lda, shmem); break;}
+		case 4: {kronmult4( n, nvec, A1,A2,A3,A4,       Xp, Yp, Wp, lda, shmem); break;}
+		case 5: {kronmult5( n, nvec, A1,A2,A3,A4,A5,    Xp, Yp, Wp, lda, shmem); break;}
+		case 6: {kronmult6( n, nvec, A1,A2,A3,A4,A5,A6, Xp, Yp, Wp, lda, shmem); break;}
                 default: { assert( false ); }
 		};
         }; // for iz

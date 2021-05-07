@@ -60,6 +60,8 @@
 	kronmult6_pbatched.hpp 
 	kronmult6_pbatched.cpp 
 	kronmult6.hpp 
+        kernel_context.hpp
+        kernel_context.cpp
       )
    
     if(USE_GPU)

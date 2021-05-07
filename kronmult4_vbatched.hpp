@@ -39,6 +39,12 @@ void kronmult4_vbatched(
 //
 //
 {
+#ifdef USE_GPU
+        extern __shared__ char* shmem;
+#else
+        char* shmem;
+#endif
+
         int constexpr ndim = 4;
 	int const m5 = 1; int const n5 = 1;
 	int const m6 = 1; int const n6 = 1;
@@ -49,7 +55,7 @@ void kronmult4_vbatched(
 			m4, n4, 
 			m5, n5, 
 			m6, n6, 
-			Aarray_, pX_, pY_, W_, Wcapcity,batchCount );
+			Aarray_, pX_, pY_, W_, Wcapcity,batchCount, shmem );
 }
 
 

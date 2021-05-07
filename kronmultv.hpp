@@ -29,7 +29,8 @@ void kronmultv(
 		int const nvec,
                 T   X_[],
                 T   Y_[],
-                T   W_[]
+                T   W_[],
+                volatile char* shmem
 	        )
 {
   // -----------------
@@ -123,7 +124,7 @@ void kronmultv(
               kgemm_nt( mm,nn,kk, 
                         alpha, Ap, ldAp,
                                Bp, ldBp,
-                        beta,  Cp, ldCp );
+                        beta,  Cp, ldCp, shmem );
       };
   
       int const next_nvec = nvec * m1;
@@ -141,7 +142,7 @@ void kronmultv(
                         // m1,n1,A1_,ld1, // unused
 			1, 1, nullptr,1,  // unused
 			next_nvec,
-			W_, Y_, X_ );
+			W_, Y_, X_, shmem );
       }
   
 }
@@ -160,7 +161,8 @@ void kronmultv(
 	       int const nvec,
                double   X_[],
                double   Y_[],
-               double   W_[]
+               double   W_[],
+               volatile char* shmem
 	      )
 {
    assert( (1 <= m1) && (1 <= n1) && (m1 <= ld1) );
@@ -206,7 +208,8 @@ void kronmultv(
 	       int const nvec,
                float   X_[],
                float   Y_[],
-               float   W_[]
+               float   W_[],
+               volatile char* shmem
 	      )
 {
 

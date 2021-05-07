@@ -1,0 +1,14 @@
+# need export HIP_PLATFORM=nvcc
+CXXFLAGS = -DUSE_GPU  -O3 -UNDEBUG 
+#CXX=nvcc -x cu  -Xcompiler -fopenmp  --gpu-architecture=sm_70  --resource-usage --generate-line-info --maxrregcount 64
+#CXX=hipcc  --cuda-compile-host-device --cuda-path=$CUDA_PATH -std=c++14  
+
+# export HIP_PLATFORM=nvcc
+#CXX=hipcc    -std=c++14  
+#CXX=hipcc  --cuda-compile-host-device -x cu  -Xcompiler -fopenmp  --gpu-architecture=sm_70 -std=c++14
+#CXX=hipcc  -std=c++14 --cuda-compile-host-device -x cu  -Xcompiler -fopenmp  -Xarch_device sm_70
+#CXX=hipcc  -std=c++14 --cuda-compile-host-device -x cu   --compile-arch=sm_70 -Xcompiler -fPIC
+#CXX=hipcc  -std=c++14  -x cu   -gencode=arch=compute_70,code=sm_70
+
+CXX=hipcc  -std=c++14  -x cu  -Xcompiler -fopenmp  --gpu-architecture=sm_70 -rdc=true -I.
+

@@ -22,7 +22,8 @@ void kronmultv6( int const m1, int const n1, T const A1_[], int const ld1,
                 int const nvec,
                 T   X_[],
                 T   Y_[],
-                T   W_[]
+                 T   W_[],
+                 volatile char* shared = NULL
 	        )
 // -----------------
 // note A1 is m1 by n1
@@ -45,7 +46,7 @@ void kronmultv6( int const m1, int const n1, T const A1_[], int const ld1,
 		    m5,n5,A5_,ld5,
 		    m6,n6,A6_,ld6,
 		    nvec,
-                    X_,Y_,W_);
+                    X_,Y_,W_,shmem);
 }
 
 #endif

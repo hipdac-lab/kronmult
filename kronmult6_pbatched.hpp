@@ -41,9 +41,11 @@ void kronmult6_pbatched(
         int const iz_size =  gridDim.x;
         assert( gridDim.y == 1);
         assert( gridDim.z == 1);
+        extern __shared__ char* shmem;
 #else
         int const iz_start = 1;
         int const iz_size = 1;
+        char* shmem = NULL;
 #endif
 
 
@@ -73,7 +75,7 @@ void kronmult6_pbatched(
                 T const * const A5 = &(Aarray(1,1,5,ibatch));
                 T const * const A6 = &(Aarray(1,1,6,ibatch));
                 int const nvec = 1;
-                kronmult6( n, nvec, A1,A2,A3,A4,A5,A6, Xp, Yp, Wp );
+                kronmult6( n, nvec, A1,A2,A3,A4,A5,A6, Xp, Yp, Wp, shmem );
         };
 
 }

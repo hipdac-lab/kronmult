@@ -16,7 +16,8 @@ void kronmultv1( int const m1,  int const n1, T   const A1_[], int const ld1,
                 int const nvec,
                 T   X_[],
                 T   Y_[],
-                T   W_[]
+                 T   W_[],
+                 volatile char* shmem = NULL
 	        )
 // -----------------
 // note A1 is m1 by n1
