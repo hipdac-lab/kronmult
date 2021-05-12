@@ -359,7 +359,7 @@ T test_kgemm_nn_batched( int const mm,
 
 
         int constexpr warpsize = WARPSIZE;
-        int const nwarps = 2;
+        int const nwarps = 4;
         int const nthreads = nwarps * warpsize;
 
         hipError_t istat_sync_start = hipDeviceSynchronize();
@@ -465,6 +465,7 @@ T test_kgemm_nn_batched( int const mm,
                              cij += aik * bkj;
                       };
                       cij = alpha * cij + beta * cij0;
+                      //std::cout << i << " " << j << " " << cij << " " << C(i,j) << std::endl;
 
                       double const abserr = std::abs( cij  - C(i,j) );
                       max_abserr = std::max( max_abserr, abserr );
@@ -540,9 +541,6 @@ int main_func( double const tol)
                   <<  batchCount_max
                   <<  "\n";
   
-
-
-
         int nerrors = 0;
         for(int batchCount=1; batchCount <= batchCount_max; batchCount += inc) {
         for(int kk=1; kk <= kk_max; kk += inc) {

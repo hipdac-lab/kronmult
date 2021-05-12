@@ -10,5 +10,5 @@ CXXFLAGS = -DUSE_GPU  -O3 -UNDEBUG
 #CXX=hipcc  -std=c++14 --cuda-compile-host-device -x cu   --compile-arch=sm_70 -Xcompiler -fPIC
 #CXX=hipcc  -std=c++14  -x cu   -gencode=arch=compute_70,code=sm_70
 
-CXX=hipcc  -std=c++14  -x cu  -Xcompiler -fopenmp  --gpu-architecture=sm_70 -rdc=true -I.
+CXX=hipcc  -std=c++14  -x cu --ptxas-options=-v  --generate-line-info -Xcompiler -fopenmp  --gpu-architecture=sm_70 -rdc=true -I.
 

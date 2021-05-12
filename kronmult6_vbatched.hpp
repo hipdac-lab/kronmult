@@ -42,7 +42,7 @@ void kronmult6_vbatched(
 //
 {
 #ifdef USE_GPU
-        extern __shared__ char* shmem;
+        extern __shared__ char shmem[];
 #else
         char* shmem = NULL;
 #endif

@@ -191,7 +191,7 @@ void kronmultv(
     kgemm_nn( mm,nn,kk,
               alpha,  Ap, ldAp,
                       Bp, ldBp,
-              beta,   Cp, ldCp );
+              beta,   Cp, ldCp, shmem );
 }
 
 
@@ -234,7 +234,7 @@ void kronmultv(
     kgemm_nn( mm,nn,kk,
               alpha,  Ap, ldAp,
                       Bp, ldBp,
-              beta,   Cp, ldCp );
+              beta,   Cp, ldCp, shmem );
 }
 
 

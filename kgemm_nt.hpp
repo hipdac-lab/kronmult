@@ -7,17 +7,24 @@
 //  NotransA and TransB case
 //  C = alpha*A*transpose(B) + beta *C
 //  -----------------------
-#ifdef USE_GPU // Use a TSM2L-based technique
-// Algorithm implementation
+
+#ifdef USE_GPU
+extern __device__ int* sigCount, * totalCount;
+extern __device__ long long int sigTime, totalTime;
+
+extern __device__ long long int sigTemp, totalTemp;
+#endif
+
+// Second implementation of kgemm_nt using TSM2L and shared memory
 template<typename T,typename Tc, int t1, int t2, int t3>
 DEVICE_FUNCTION
-void kgemm_nt3(volatile T* currB_, int const ldCurrB, int const padCurrB,
-               int const m, int const n, int const k, 
-               T const alpha_in,
-               T const * const A_, int const ldA,
-               T const * const B_, int const ldB,
-               T const beta_in,
-               T * C_, int const ldC)
+void kgemm_nt_v2(volatile T* currB_, int const ldCurrB, int const padCurrB,
+                 int const m, int const n, int const k, 
+                 T const alpha_in,
+                 T const * const A_, int const ldA,
+                 T const * const B_, int const ldB,
+                 T const beta_in,
+                 T * C_, int const ldC)
 {
 #ifdef USE_LAMBDA
         auto A = [=] (int const ia,
@@ -182,140 +189,36 @@ void kgemm_nt3(volatile T* currB_, int const ldCurrB, int const padCurrB,
                                 #pragma unroll
                                 for (int i = 0; i < t2; ++i) {
                                         if (p + i < n) {
-                                                C(thread, p + i) =
-                                                        (alpha_in * currC[i]) + (beta_in * C(thread, p + i));
+                                                if (beta_in == 1) {
+                                                        atomicAdd(&(C(thread, p + i)), alpha_in * currC[i]);
+                                                } else if (beta_in == 0) {
+                                                        C(thread, p + i) = alpha_in * currC[i];
+                                                } else {
+                                                        C(thread, p + i) =
+                                                                (alpha_in * currC[i]) + (beta_in * C(thread, p + i));
+                                                }
                                         }
                                 }
                         }
                 }
         }
+#ifndef USE_LAMBDA
+#undef A
+#undef B
+#undef C
+#endif
 }
 
-// Select parameters
+// First implementation of kgemm_nt, without shared memory
 template<typename T,typename Tc>
 DEVICE_FUNCTION
-void kgemm_nt2(int const mm, int const nn, int const kk, 
-               T const alpha_in,
-               T const * const A_, int const ldA,
-               T const * const B_, int const ldB,
-               T const beta_in,
-               T * C_, int const ldC,
-               volatile char* shmem)
-{
-        // V100 tuning
-        int const GPU_NT_T1 = 128;
-        switch (nn) {
-        case 1:
-                kgemm_nt3<T, Tc, GPU_NT_T1, 1, 1>((volatile T*) shmem, GPU_NT_T1, 0,
-                                                    mm, nn, kk,
-                                                    alpha_in,
-                                                    A_, ldA,
-                                                    B_, ldB,
-                                                    beta_in,
-                                                    C_, ldC);
-                break;
-        case 2:
-                kgemm_nt3<T, Tc, GPU_NT_T1, 2, 2>((volatile T*) shmem, GPU_NT_T1, 0,
-                                                    mm, nn, kk,
-                                                    alpha_in,
-                                                    A_, ldA,
-                                                    B_, ldB,
-                                                    beta_in,
-                                                    C_, ldC);
-                break;
-        case 3:
-                kgemm_nt3<T, Tc, GPU_NT_T1, 3, 3>((volatile T*) shmem, GPU_NT_T1, 0,
-                                                    mm, nn, kk,
-                                                    alpha_in,
-                                                    A_, ldA,
-                                                    B_, ldB,
-                                                    beta_in,
-                                                    C_, ldC);
-                break;
-        case 4:
-                kgemm_nt3<T, Tc, GPU_NT_T1, 4, 4>((volatile T*) shmem, GPU_NT_T1, 0,
-                                                    mm, nn, kk,
-                                                    alpha_in,
-                                                    A_, ldA,
-                                                    B_, ldB,
-                                                    beta_in,
-                                                    C_, ldC);
-                break;
-        case 5:
-                kgemm_nt3<T, Tc, GPU_NT_T1, 5, 5>((volatile T*) shmem, GPU_NT_T1, 0,
-                                                    mm, nn, kk,
-                                                    alpha_in,
-                                                    A_, ldA,
-                                                    B_, ldB,
-                                                    beta_in,
-                                                    C_, ldC);
-                break;
-        case 6:
-                kgemm_nt3<T, Tc, GPU_NT_T1, 6, 6>((volatile T*) shmem, GPU_NT_T1, 0,
-                                                    mm, nn, kk,
-                                                    alpha_in,
-                                                    A_, ldA,
-                                                    B_, ldB,
-                                                    beta_in,
-                                                    C_, ldC);
-                break;
-        case 7:
-                kgemm_nt3<T, Tc, GPU_NT_T1, 7, 7>((volatile T*) shmem, GPU_NT_T1, 0,
-                                                    mm, nn, kk,
-                                                    alpha_in,
-                                                    A_, ldA,
-                                                    B_, ldB,
-                                                    beta_in,
-                                                    C_, ldC);
-                break;
-        case 8:
-                kgemm_nt3<T, Tc, GPU_NT_T1, 8, 8>((volatile T*) shmem, GPU_NT_T1, 0,
-                                                    mm, nn, kk,
-                                                    alpha_in,
-                                                    A_, ldA,
-                                                    B_, ldB,
-                                                    beta_in,
-                                                    C_, ldC);
-                break;
-        case 9:
-                kgemm_nt3<T, Tc, GPU_NT_T1, 9, 9>((volatile T*) shmem, GPU_NT_T1, 0,
-                                                    mm, nn, kk,
-                                                    alpha_in,
-                                                    A_, ldA,
-                                                    B_, ldB,
-                                                    beta_in,
-                                                    C_, ldC);
-                break;
-        case 10:
-                kgemm_nt3<T, Tc, GPU_NT_T1, 10, 10>((volatile T*) shmem, GPU_NT_T1, 0,
-                                                    mm, nn, kk,
-                                                    alpha_in,
-                                                    A_, ldA,
-                                                    B_, ldB,
-                                                    beta_in,
-                                                    C_, ldC);
-                break;
-        default:
-                kgemm_nt3<T, Tc, GPU_NT_T1, 10, 10>((volatile T*) shmem, GPU_NT_T1, 0,
-                                                    mm, nn, kk,
-                                                    alpha_in,
-                                                    A_, ldA,
-                                                    B_, ldB,
-                                                    beta_in,
-                                                    C_, ldC);
-                break;
-        }
-}
-#else
-template<typename T,typename Tc>
-DEVICE_FUNCTION
-void kgemm_nt2( int const mm, int const nn, int const kk, 
-                T const alpha_in,
-                T const * const A_,  int const ldA,
-                T const * const B_,  int const ldB,
-                T const beta_in,
-                T * C_,  int const ldC,
-                volatile char* shmem)
+void kgemm_nt_v1( int const mm, int const nn, int const kk, 
+                  T const alpha_in,
+                  T const * const A_,  int const ldA,
+                  T const * const B_,  int const ldB,
+                  T const beta_in,
+                  T * C_,  int const ldC,
+                  volatile char* shmem)
 {
 #ifdef USE_LAMBDA
         auto min = []( int const x, int const y) {
@@ -477,6 +380,154 @@ void kgemm_nt2( int const mm, int const nn, int const kk,
 
             }; // end istart
         }; // end jstart
+}
+
+#ifdef USE_GPU
+// Select parameters
+template<typename T,typename Tc>
+DEVICE_FUNCTION
+void kgemm_nt2(int const mm, int const nn, int const kk, 
+               T const alpha_in,
+               T const * const A_, int const ldA,
+               T const * const B_, int const ldB,
+               T const beta_in,
+               T * C_, int const ldC,
+               volatile char* shmem)
+{
+        if (blockIdx.x == 0 && threadIdx.x == 0) {
+                atomicAdd(totalCount, 1);
+                totalTemp = clock64();
+                if (mm >= 128) {
+                        sigTemp = totalTemp;
+                        atomicAdd(sigCount, 1);
+                }
+        }
+        // V100 tuning
+        if (true/*mm <= 128*/) {
+                kgemm_nt_v1<T, Tc>(mm, nn, kk, alpha_in, A_, ldA,
+                           B_, ldB, beta_in, C_, ldC, shmem);
+        } else {
+                int const GPU_NT_T1 = 128;
+                switch (nn) {
+                case 1:
+                        kgemm_nt_v2<T, Tc, GPU_NT_T1, 1, 1>((volatile T*) shmem, GPU_NT_T1, 0,
+                                                            mm, nn, kk,
+                                                            alpha_in,
+                                                            A_, ldA,
+                                                            B_, ldB,
+                                                            beta_in,
+                                                            C_, ldC);
+                        break;
+                case 2:
+                        kgemm_nt_v2<T, Tc, GPU_NT_T1, 2, 2>((volatile T*) shmem, GPU_NT_T1, 0,
+                                                            mm, nn, kk,
+                                                            alpha_in,
+                                                            A_, ldA,
+                                                            B_, ldB,
+                                                            beta_in,
+                                                            C_, ldC);
+                        break;
+                case 3:
+                        kgemm_nt_v2<T, Tc, GPU_NT_T1, 3, 3>((volatile T*) shmem, GPU_NT_T1, 0,
+                                                            mm, nn, kk,
+                                                            alpha_in,
+                                                            A_, ldA,
+                                                            B_, ldB,
+                                                            beta_in,
+                                                            C_, ldC);
+                        break;
+                case 4:
+                        kgemm_nt_v2<T, Tc, GPU_NT_T1, 4, 4>((volatile T*) shmem, GPU_NT_T1, 0,
+                                                            mm, nn, kk,
+                                                            alpha_in,
+                                                            A_, ldA,
+                                                            B_, ldB,
+                                                            beta_in,
+                                                            C_, ldC);
+                        break;
+                case 5:
+                        kgemm_nt_v2<T, Tc, GPU_NT_T1, 5, 5>((volatile T*) shmem, GPU_NT_T1, 0,
+                                                            mm, nn, kk,
+                                                            alpha_in,
+                                                            A_, ldA,
+                                                            B_, ldB,
+                                                            beta_in,
+                                                            C_, ldC);
+                        break;
+                case 6:
+                        kgemm_nt_v2<T, Tc, GPU_NT_T1, 6, 6>((volatile T*) shmem, GPU_NT_T1, 0,
+                                                            mm, nn, kk,
+                                                            alpha_in,
+                                                            A_, ldA,
+                                                            B_, ldB,
+                                                            beta_in,
+                                                            C_, ldC);
+                        break;
+                case 7:
+                        kgemm_nt_v2<T, Tc, GPU_NT_T1, 7, 7>((volatile T*) shmem, GPU_NT_T1, 0,
+                                                            mm, nn, kk,
+                                                            alpha_in,
+                                                            A_, ldA,
+                                                            B_, ldB,
+                                                            beta_in,
+                                                            C_, ldC);
+                        break;
+                case 8:
+                        kgemm_nt_v2<T, Tc, GPU_NT_T1, 8, 8>((volatile T*) shmem, GPU_NT_T1, 0,
+                                                            mm, nn, kk,
+                                                            alpha_in,
+                                                            A_, ldA,
+                                                            B_, ldB,
+                                                            beta_in,
+                                                            C_, ldC);
+                        break;
+                case 9:
+                        kgemm_nt_v2<T, Tc, GPU_NT_T1, 9, 9>((volatile T*) shmem, GPU_NT_T1, 0,
+                                                            mm, nn, kk,
+                                                            alpha_in,
+                                                            A_, ldA,
+                                                            B_, ldB,
+                                                            beta_in,
+                                                            C_, ldC);
+                        break;
+                case 10:
+                        kgemm_nt_v2<T, Tc, GPU_NT_T1, 10, 10>((volatile T*) shmem, GPU_NT_T1, 0,
+                                                              mm, nn, kk,
+                                                              alpha_in,
+                                                              A_, ldA,
+                                                              B_, ldB,
+                                                              beta_in,
+                                                              C_, ldC);
+                        break;
+                default:
+                        kgemm_nt_v2<T, Tc, GPU_NT_T1, 10, 10>((volatile T*) shmem, GPU_NT_T1, 0,
+                                                              mm, nn, kk,
+                                                              alpha_in,
+                                                              A_, ldA,
+                                                              B_, ldB,
+                                                              beta_in,
+                                                              C_, ldC);
+                        break;
+                }
+        }
+        if (blockIdx.x == 0 && threadIdx.x == 0) {
+                totalTime += (clock64() - totalTemp);
+                if (mm >= 128) sigTime += clock64() - sigTemp;
+        }
+}
+#else
+template<typename T,typename Tc>
+DEVICE_FUNCTION
+void kgemm_nt2( int const mm, int const nn, int const kk, 
+                T const alpha_in,
+                T const * const A_,  int const ldA,
+                T const * const B_,  int const ldB,
+                T const beta_in,
+                T * C_,  int const ldC,
+                volatile char* shmem)
+{
+        kgemm_nt_v1<T, Tc>(mm, nn, kk, alpha_in, A_, ldA,
+                           B_, ldB, beta_in, C_, ldC, shmem);
 }
 #endif
 

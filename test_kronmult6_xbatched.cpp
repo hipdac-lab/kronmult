@@ -15,7 +15,33 @@
 #include "kronmult1_xbatched.hpp"
 
 
+#ifdef USE_GPU
+__device__ int* sigCount, * totalCount;
+__device__ long long int sigTime, totalTime;
+__device__ long long int sigTemp, totalTemp;
 
+__global__ void allocCounters() {
+        sigCount = (int *) malloc(sizeof(int));
+        totalCount = (int *) malloc(sizeof(int));
+}
+
+__global__ void freeCounters() {
+        free(sigCount);
+        free(totalCount);
+}
+
+__global__ void resetCounters() {
+        *sigCount = 0;
+        *totalCount = 0;
+        sigTime = 0;
+        totalTime = 0;
+}
+
+__global__ void printCounters() {
+        printf("sig: %d (time %lld) out of total: %d (time %lld)\n", *sigCount, sigTime, *totalCount, totalTime);
+}
+
+#endif 
 
 static inline
 void host2gpu( void *dest, void *src, size_t nbytes )
@@ -298,7 +324,7 @@ double test_kronmult_xbatched(  int const idim,
 #ifdef USE_GPU
         {
         int constexpr warpsize = WARPSIZE;
-        int const nwarps = 2;
+        int const nwarps = 4;
         int const nthreads = nwarps * warpsize;
 
         // --------------------------------------------
@@ -664,6 +690,8 @@ int main_func( double const tol) {
 
         int nerrors = 0;
 
+        allocCounters<<<1, 1>>>();
+
         for (int idim =1; idim <= 6; idim++) {
         for (int ibatch_table=0; ibatch_table < size_batch_table; ibatch_table++) {
         for (int in_table = 0;  in_table < size_n_table; in_table++) {
@@ -686,7 +714,6 @@ int main_func( double const tol) {
         };
         };
 
-
         if (nerrors == 0) {
                 std::cout << "ALL PASSED" << "\n";
         }
@@ -702,17 +729,23 @@ int main_func( double const tol) {
                bool const do_check = 0;
                int const idebug = 0;
                int const idim = 6;
-
-
-               for(int n=4; n <= 8; n++) {
-                test_kronmult_xbatched<T>(idim,n, batchCount, idebug, do_check );
+               
+               
+               for(int n=3; n <= 8; n++) {
+#ifdef USE_GPU
+                       resetCounters<<<1, 1>>>();
+#endif
+                       test_kronmult_xbatched<T>(idim,n, batchCount, idebug, do_check );
+#ifdef USE_GPU
+                       printCounters<<<1, 1>>>();
+#endif
                };
         };
 
 
-
-
-  return(0);
+        freeCounters<<<1, 1>>>();
+        
+        return(0);
 }
 
 

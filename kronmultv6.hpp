@@ -23,7 +23,7 @@ void kronmultv6( int const m1, int const n1, T const A1_[], int const ld1,
                 T   X_[],
                 T   Y_[],
                  T   W_[],
-                 volatile char* shared = NULL
+                 volatile char* shmem = NULL
 	        )
 // -----------------
 // note A1 is m1 by n1

@@ -58,7 +58,7 @@ void kronmult1( int const n,
     kgemm_nn( mm,nn,kk,
               alpha,  Ap, ld1,
                       Bp, ld2,
-              beta,   Cp, ld3 );
+              beta,   Cp, ld3, shmem );
 
 #endif
 }

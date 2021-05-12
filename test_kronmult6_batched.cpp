@@ -189,7 +189,7 @@ T test_kronmult_batched(  int const idim,
 #ifdef USE_GPU
         {
         int constexpr warpsize = WARPSIZE;
-        int const nwarps = 2;
+        int const nwarps = 4;
         int const nthreads = nwarps * warpsize;
 
         // --------------------------------------------
@@ -406,7 +406,7 @@ T test_kronmult_batched(  int const idim,
                 int const max_j6 = (idim >= 6) ? n : 1;
 
 #ifdef _OPENMP
-                #pragma omp parallel for collapse(6)  reduction(max:max_abserr)
+                //#pragma omp parallel for collapse(6)  reduction(max:max_abserr)
 #endif
                 for(int i1=1; i1 <= max_i1; i1++) 
                 for(int i2=1; i2 <= max_i2; i2++) 
@@ -458,6 +458,7 @@ T test_kronmult_batched(  int const idim,
                    };
 
                    T const abs_err = std::abs( Y_ic - Y(ic) );
+                   
                    max_abserr = std::max( max_abserr, abs_err );
 
                    if (idebug >= 1) {
@@ -465,6 +466,7 @@ T test_kronmult_batched(  int const idim,
                        if (abs_err > tol ) {
                              std::cout  << " idim = " << idim
                                         << " ic = " << ic 
+                                        << " ibatch = " << ibatch
                                         << " Y_ic = " << Y_ic
                                         << " Y(ic) =  " << Y(ic)
                                         << " abs_err = " << abs_err << "\n";
@@ -515,7 +517,6 @@ int main() {
 
         int n_table[] = {1, 2,3, 4 };
         int const size_n_table = sizeof(n_table)/sizeof(n_table[0]);
-
 
         int nerrors = 0;
 

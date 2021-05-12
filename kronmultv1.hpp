@@ -49,7 +49,7 @@ void kronmultv1( int const m1,  int const n1, T   const A1_[], int const ld1,
     kgemm_nn( mm,nn,kk,
               alpha,  Ap, ldAp,
                       Bp, ldBp,
-              beta,   Cp, ldCp );
+              beta,   Cp, ldCp, shmem );
 
 }
 

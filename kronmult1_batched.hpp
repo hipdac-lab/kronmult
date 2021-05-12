@@ -35,7 +35,7 @@ void kronmult1_batched(
         int const iz_size =  gridDim.x;
         assert( gridDim.y == 1 );
         assert( gridDim.z == 1 );
-        extern __shared__ char* shmem;
+        extern __shared__ char shmem[];
 #else
         int const iz_start = 1;
         int const iz_size = 1;

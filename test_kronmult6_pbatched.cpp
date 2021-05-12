@@ -263,7 +263,7 @@ T test_kronmult_pbatched(  int const idim,
 #ifdef USE_GPU
         {
         int constexpr warpsize = WARPSIZE;
-        int const nwarps = 2;
+        int const nwarps = 4;
         int const nthreads = nwarps * warpsize;
 
         // --------------------------------------------
@@ -554,6 +554,7 @@ T test_kronmult_pbatched(  int const idim,
                                Yval = Y2array(ic,ibatch);
                                Y_ic  = Yarray(ic,ibatch);
                                abs_err = std::abs(Yval - Y_ic);
+                               
                        };
                    };
                    max_abserr = std::max( max_abserr,abs_err);
