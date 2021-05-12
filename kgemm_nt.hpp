@@ -9,10 +9,12 @@
 //  -----------------------
 
 #ifdef USE_GPU
+#ifdef PROFILE
 extern __device__ int* sigCount, * totalCount;
 extern __device__ long long int sigTime, totalTime;
 
 extern __device__ long long int sigTemp, totalTemp;
+#endif
 #endif
 
 // Second implementation of kgemm_nt using TSM2L and shared memory
@@ -394,6 +396,7 @@ void kgemm_nt2(int const mm, int const nn, int const kk,
                T * C_, int const ldC,
                volatile char* shmem)
 {
+        #ifdef PROFILE
         if (blockIdx.x == 0 && threadIdx.x == 0) {
                 atomicAdd(totalCount, 1);
                 totalTemp = clock64();
@@ -402,8 +405,9 @@ void kgemm_nt2(int const mm, int const nn, int const kk,
                         atomicAdd(sigCount, 1);
                 }
         }
+        #endif
         // V100 tuning
-        if (true/*mm <= 128*/) {
+        if (mm <= 128) {
                 kgemm_nt_v1<T, Tc>(mm, nn, kk, alpha_in, A_, ldA,
                            B_, ldB, beta_in, C_, ldC, shmem);
         } else {
@@ -510,10 +514,12 @@ void kgemm_nt2(int const mm, int const nn, int const kk,
                         break;
                 }
         }
+#ifdef PROFILE
         if (blockIdx.x == 0 && threadIdx.x == 0) {
                 totalTime += (clock64() - totalTemp);
                 if (mm >= 128) sigTime += clock64() - sigTemp;
         }
+#endif
 }
 #else
 template<typename T,typename Tc>

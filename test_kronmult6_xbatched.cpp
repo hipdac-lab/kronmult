@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define PROFILE
+
 #include "kroncommon.hpp"
 #include "kernel_context.hpp"
 #include "kronmult6_xbatched.hpp"
